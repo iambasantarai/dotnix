@@ -58,7 +58,9 @@
     };
   };
 
-  home.file.".config/i3".source = /home/basanta/dotnix/i3;
+  home.file.".config/hypr".source = /home/basanta/dotnix/hypr;
+  home.file.".config/waybar".source = /home/basanta/dotnix/waybar;
+  home.file.".config/wofi".source = /home/basanta/dotnix/wofi;
 
   home.packages = with pkgs; [
     # guis

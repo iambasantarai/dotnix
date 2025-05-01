@@ -44,16 +44,9 @@ in {
   #   useXkbConfig = true; # use xkb.options in tty.
   # };
 
-  # Enable the X11 windowing system.
-  services.xserver = {
-    enable = true;
-    windowManager.i3 = {
-      enable = true;
-      extraPackages = with pkgs; [ dmenu i3status i3lock feh ];
-    };
-  };
-
   # Configure display manager 
+  services.xserver.displayManager.gdm.enable = true;
+
   # ervices.xserver.xkb.layout = "us";
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
 
@@ -81,7 +74,10 @@ in {
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
   };
 
-  programs = { firefox = { enable = true; }; };
+  programs = {
+    hyprland = { enable = true; };
+    firefox = { enable = true; };
+  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -89,12 +85,15 @@ in {
     alacritty
     brightnessctl
     git
-    pamixer
-    vim
-
-    # notifications
-    dunst
+    hypridle
+    hyprlock
+    hyprpaper
     libnotify
+    pamixer
+    swaynotificationcenter
+    vim
+    waybar
+    wofi
   ];
 
   # Fonts
