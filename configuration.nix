@@ -3,12 +3,19 @@
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
 { config, lib, pkgs, ... }:
+let
+  home-manager = builtins.fetchTarball
+    "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz";
+in {
+  imports = [ # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    (import "${home-manager}/nixos")
+  ];
 
-{
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  home-manager.useUserPackages = true;
+  home-manager.useGlobalPkgs = true;
+  home-manager.backupFileExtension = "backup";
+  home-manager.users.basanta = import ./home.nix;
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -18,7 +25,8 @@
   networking.hostName = "nixos";
 
   # Pick only one of the below networking options.
-  networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.wireless.enable =
+    true; # Enables wireless support via wpa_supplicant.
   # networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
   # Set your time zone.
@@ -41,11 +49,7 @@
     enable = true;
     windowManager.i3 = {
       enable = true;
-      extraPackages = with pkgs; [
-	dmenu
-	i3status
-	i3lock
-      ];
+      extraPackages = with pkgs; [ dmenu i3status i3lock feh ];
     };
   };
 
@@ -62,36 +66,42 @@
   services.pipewire = {
     enable = true;
     pulse.enable = true;
+    jack.enable = true;
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
-  services.libinput.enable = true;
+  services.libinput = {
+    enable = true;
+    touchpad = { disableWhileTyping = true; };
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.basanta = {
     isNormalUser = true;
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-    packages = with pkgs; [
-      tree
-    ];
   };
 
-  programs.firefox.enable = true;
+  programs = { firefox = { enable = true; }; };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    pcmanfm
     alacritty
-    curl
+    brightnessctl
     git
+    pamixer
     vim
-    wget
+
+    # notifications
+    dunst
+    libnotify
   ];
-	
+
   # Fonts
   fonts.packages = with pkgs; [
-    jetbrains-mono
+    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    noto-fonts-cjk-sans
+    noto-fonts-emoji
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -105,7 +115,7 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
