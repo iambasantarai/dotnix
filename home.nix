@@ -1,4 +1,5 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+{
   home.username = "basanta";
   home.homeDirectory = "/home/basanta";
   home.stateVersion = "24.11";
@@ -14,7 +15,7 @@
       "..." = "cd ../..";
 
       shutdown = "sudo shutdown -h now 'Bye!'";
-
+      
       # show open ports
       ports = "netstat -tulanp";
 
@@ -43,17 +44,17 @@
       window = {
         decorations = "none";
         opacity = 0.9;
-        padding = {
-          x = 2;
-          y = 2;
-        };
+	padding = {
+	  x = 2;
+	  y = 2;
+	};
       };
       font = {
-        normal = {
+	normal = {
           family = "JetBrainsMono Nerd Font";
           style = "Regular";
-        };
-        size = 9;
+    	};
+        size = 13;
       };
     };
   };
@@ -61,11 +62,15 @@
   home.file.".config/hypr".source = /home/basanta/dotnix/hypr;
   home.file.".config/waybar".source = /home/basanta/dotnix/waybar;
   home.file.".config/wofi".source = /home/basanta/dotnix/wofi;
+  home.file.".config/swappy".source = /home/basanta/dotnix/swappy;
 
   home.packages = with pkgs; [
     # guis
-    flameshot
+    grim
+    imagemagick
     pcmanfm
+    slurp
+    swappy
     vlc
 
     # clis
@@ -83,6 +88,7 @@
     tree
     tree
     wget
+    wl-clipboard
     xclip
     zip
 
